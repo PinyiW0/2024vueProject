@@ -1,5 +1,5 @@
 import './assets/scss/all.scss'
-import 'bootstrap'
+import * as bootstrap from 'bootstrap'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -23,5 +23,6 @@ app.use(router)
 app.use(VueAxios, axios)
 app.use(VueSweetalert2)
 app.use(LoadingPlugin)
+app.config.globalProperties.$bs = bootstrap
 
 app.mount('#app')
