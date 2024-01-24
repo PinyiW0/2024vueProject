@@ -229,15 +229,15 @@ export default {
         //點擊新增btn，清空當前產品內容，開啟productModal
         this.tempProduct = {};
         this.isNew = true;
-        productModal.show();
+        this.productModal.show();
       } else if (status === 'edit'){
         //點擊新增btn，將當前產品內容傳入，目的為串接刪除 API 需要取得產品的 id，開啟productModal
         this.tempProduct = {...item};
         this.isNew = false;
-        productModal.show();
+        this.productModal.show();
       } else if (status === 'delete') {
         this.tempProduct = { ...item };
-        delProductModal.show();
+        this.delProductModal.show();
       }
     },
   },
