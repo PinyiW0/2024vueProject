@@ -142,7 +142,7 @@
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                   取消
                 </button>
-                <button type="button" class="btn btn-primary">
+                <button type="button" class="btn btn-primary" @click="updateProduct">
                   確認
                 </button>
               </div>
@@ -240,6 +240,37 @@ export default {
         this.delProductModal.show();
       }
     },
+    updateProduct(){
+      if (this.isNew){
+        console.log(this);
+        this.axios.put(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`, { data: this.tempProduct })
+      } else {
+        this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, { data: this.tempProduct })
+          .then((res) => {
+            alert(res.data.meassage);
+            this.productModal.hide();
+            this.getData();
+          })
+          .catch((err) => {
+            alert(err.response.data.message);
+          })
+      }
+    },
+    delProduct(){
+      this.axios.delete(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`)
+        .then((res) => {
+          alert(res.data.meassage);
+          this.delProductModal.hide();
+          this.getData();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        })
+    },
+    createImages(){ //這邊不會
+      this.tempProduct.imagesUrl = [];
+      this.tempProduct.imagesUrl.push('');
+    }
   },
 
   mounted() {
