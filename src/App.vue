@@ -1,6 +1,6 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+//import HelloWorld from './components/HelloWorld.vue'
 export default {
   mounted() {
     console.log(this.$bs)

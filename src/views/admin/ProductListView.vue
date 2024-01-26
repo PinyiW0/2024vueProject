@@ -29,7 +29,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in productList" :key="item.id">
+              <tr v-for="item in products" :key="item.id">
                 <td>{{ item.category }}</td>
                 <td>{{ item.title }}</td>
                 <td class="text-end">{{ item.origin_price }}</td>
@@ -61,7 +61,7 @@
                 <h5 id="productModalLabel" class="modal-title">
                   <span>新增產品</span>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInput"></button>
               </div>
               <div class="modal-body">
                 <div class="row">
@@ -75,12 +75,12 @@
                       <img class="img-fluid" :src="tempProduct.imageUrl" alt="">
                     </div>
                     <div>
-                      <button class="btn btn-outline-primary btn-sm d-block w-100" @click.prevent="createImages">
+                      <button class="btn btn-outline-primary btn-sm d-block w-100" @click.prevent="tempProduct.imagesUrl.push('')">
                         新增圖片
                       </button>
                     </div>
                     <div v-if="tempProduct.imagesUrl">
-                      <button class="btn btn-outline-danger btn-sm d-block w-100" @click="createImages">
+                      <button class="btn btn-outline-danger btn-sm d-block w-100" @click="clearInput">
                         刪除圖片
                       </button>
                     </div>
@@ -88,30 +88,30 @@
                   <div class="col-sm-8">
                     <div class="mb-3">
                       <label for="title" class="form-label">標題</label>
-                      <input id="title" type="text" class="form-control" placeholder="請輸入標題">
+                      <input id="title" type="text" class="form-control" placeholder="請輸入標題" v-model="tempProduct.title">
                     </div>
 
                     <div class="row">
                       <div class="mb-3 col-md-6">
                         <label for="category" class="form-label">分類</label>
                         <input id="category" type="text" class="form-control"
-                               placeholder="請輸入分類">
+                               placeholder="請輸入分類" v-model="tempProduct.category">
                       </div>
                       <div class="mb-3 col-md-6">
                         <label for="price" class="form-label">單位</label>
-                        <input id="unit" type="text" class="form-control" placeholder="請輸入單位">
+                        <input id="unit" type="text" class="form-control" placeholder="請輸入單位" v-model="tempProduct.unit">
                       </div>
                     </div>
 
                     <div class="row">
                       <div class="mb-3 col-md-6">
                         <label for="origin_price" class="form-label">原價</label>
-                        <input id="origin_price" type="number" min="0" class="form-control" placeholder="請輸入原價">
+                        <input id="origin_price" type="number" min="0" class="form-control" placeholder="請輸入原價"  v-model="tempProduct.origin_price">
                       </div>
                       <div class="mb-3 col-md-6">
                         <label for="price" class="form-label">售價</label>
                         <input id="price" type="number" min="0" class="form-control"
-                               placeholder="請輸入售價">
+                               placeholder="請輸入售價" v-model="tempProduct.price">
                       </div>
                     </div>
                     <hr>
@@ -119,19 +119,19 @@
                     <div class="mb-3">
                       <label for="description" class="form-label">產品描述</label>
                       <textarea id="description" type="text" class="form-control"
-                                placeholder="請輸入產品描述">
+                                placeholder="請輸入產品描述" v-model="tempProduct.description">
                     </textarea>
                     </div>
                     <div class="mb-3">
                       <label for="content" class="form-label">說明內容</label>
                       <textarea id="description" type="text" class="form-control"
-                                placeholder="請輸入說明內容">
+                                placeholder="請輸入說明內容" v-model="tempProduct.content">
                     </textarea>
                     </div>
                     <div class="mb-3">
                       <div class="form-check">
                         <input id="is_enabled" class="form-check-input" type="checkbox"
-                               :true-value="1" :false-value="0">
+                               :true-value="1" :false-value="0"  v-model="tempProduct.is_enabled">
                         <label class="form-check-label" for="is_enabled">是否啟用</label>
                       </div>
                     </div>
@@ -139,7 +139,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" @click="clearInput">
                   取消
                 </button>
                 <button type="button" class="btn btn-primary" @click="updateProduct">
@@ -149,13 +149,14 @@
             </div>
           </div>
         </div>
+        <!-- 刪除產品 -->
         <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
              aria-labelledby="delProductModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content border-0">
               <div class="modal-header bg-danger text-white">
                 <h5 id="delProductModalLabel" class="modal-title">
-                  <span>刪除產品</span>
+                  <span>刪除 {{ tempProduct.title }}</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
@@ -241,9 +242,8 @@ export default {
       }
     },
     updateProduct(){
-      console.log(this.tempProduct.id);
       if (this.isNew){ //新增產品
-        this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, this.tempProduct)
+        this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, { "data":this.tempProduct })
           .then((res) => {
             alert("產品新增成功");
             this.productModal.hide();
@@ -254,11 +254,11 @@ export default {
             alert(err.response.data.message);
           })
       } else { //修改產品
-        this.axios.put(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`, this.tempProduct)
+        this.axios.put(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`, { "data": this.tempProduct })
           .then((res) => {
             alert("產品更新成功");
             this.productModal.hide();
-            this.getData();
+            this.getProducts();
           })
           .catch((err) => {
             alert(err.response.data.message);
@@ -268,15 +268,15 @@ export default {
     delProduct(){
       this.axios.delete(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`)
         .then((res) => {
-          alert(res.data.meassage);
+          alert(res.data.message);
           this.delProductModal.hide();
-          this.getData();
+          this.getProducts();
         })
         .catch((err) => {
           alert(err.response.data.message);
         })
     },
-    createImages(){ //這邊不會
+    clearInput(){ //取消新增產品時，清空輸入框和圖檔
       this.tempProduct.imagesUrl = [];
       this.tempProduct.imagesUrl.push('');
     }
