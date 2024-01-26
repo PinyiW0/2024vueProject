@@ -3,11 +3,11 @@
     <div id="app">
         <div class="container">
           <div class="text-end mt-4">
-            <button class="btn btn-primary" @click="openModal('new')">
+            <button class="btn btn-primary" @click.prevent="openModal('new')">
               建立新的產品
             </button>
           </div>
-          <table class="table mt-4">
+          <table class="table table-hover mt-4">
             <thead>
               <tr>
                 <th width="120">
@@ -29,21 +29,21 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td class="text-end"></td>
-                <td class="text-end"></td>
+              <tr v-for="item in productList" :key="item.id">
+                <td>{{ item.category }}</td>
+                <td>{{ item.title }}</td>
+                <td class="text-end">{{ item.origin_price }}</td>
+                <td class="text-end">{{ item.price }}</td>
                 <td>
-                  <span class="text-success">啟用</span>
-                  <span>未啟用</span>
+                  <span class="text-success" v-if="item.is_enabled">啟用</span>
+                  <span class="text-danger" v-else>未啟用</span>
                 </td>
                 <td>
                   <div class="btn-group">
-                    <button type="button" class="btn btn-outline-primary btn-sm" @click="openModal('edit', item)">
+                    <button type="button" class="btn btn-outline-primary btn-sm" @click.prevent="openModal('edit', item)">
                       編輯
                     </button>
-                    <button type="button" class="btn btn-outline-danger btn-sm" @click="openModal('delete', item)">
+                    <button type="button" class="btn btn-outline-danger btn-sm" @click.prevent="openModal('delete', item)">
                       刪除
                     </button>
                   </div>
@@ -70,20 +70,20 @@
                       <div class="mb-3">
                         <label for="imageUrl" class="form-label">輸入圖片網址</label>
                         <input type="text" class="form-control"
-                               placeholder="請輸入圖片連結">
+                               placeholder="請輸入圖片連結" id="imageUrl" v-model="tempProduct.imageUrl">
                       </div>
-                      <img class="img-fluid" src="" alt="">
+                      <img class="img-fluid" :src="tempProduct.imageUrl" alt="">
                     </div>
                     <div>
-                      <button class="btn btn-outline-primary btn-sm d-block w-100">
+                      <button class="btn btn-outline-primary btn-sm d-block w-100" @click.prevent="createImages">
                         新增圖片
                       </button>
                     </div>
-                    <!-- <div v-else>
-                      <button class="btn btn-outline-danger btn-sm d-block w-100">
+                    <div v-if="tempProduct.imagesUrl">
+                      <button class="btn btn-outline-danger btn-sm d-block w-100" @click="createImages">
                         刪除圖片
                       </button>
-                    </div> -->
+                    </div>
                   </div>
                   <div class="col-sm-8">
                     <div class="mb-3">
@@ -167,7 +167,7 @@
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                   取消
                 </button>
-                <button type="button" class="btn btn-danger">
+                <button type="button" class="btn btn-danger" @click="delProduct">
                   確認刪除
                 </button>
               </div>
@@ -241,13 +241,22 @@ export default {
       }
     },
     updateProduct(){
-      if (this.isNew){
-        console.log(this);
-        this.axios.put(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`, { data: this.tempProduct })
-      } else {
-        this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, { data: this.tempProduct })
+      console.log(this.tempProduct.id);
+      if (this.isNew){ //新增產品
+        this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, this.tempProduct)
           .then((res) => {
-            alert(res.data.meassage);
+            alert("產品新增成功");
+            this.productModal.hide();
+            this.getProducts();
+
+          })
+          .catch((err) => {
+            alert(err.response.data.message);
+          })
+      } else { //修改產品
+        this.axios.put(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`, this.tempProduct)
+          .then((res) => {
+            alert("產品更新成功");
             this.productModal.hide();
             this.getData();
           })
