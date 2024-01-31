@@ -188,8 +188,33 @@
           </div>
         </div>
         <!-- Modal -->
+        <!-- pagination -->
+        <div class="container">
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+              <li class="page-item" :class="{disabled: !pages.has_pre}">
+                <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              <li class="page-item"
+                :class="{
+                  active: page === pages.current_page
+                }"
+                v-for="page in pages.total_pages" :key="page +'forPage'">
+                <a class="page-link" href="#"
+                @click="getProducts(page)">{{ page }}
+                </a>
+              </li>
+              <li class="page-item" :class="{ disabled: !pages.has_next }" >
+                <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
     </div>
-
   </main>
 </template>
 
@@ -207,6 +232,7 @@ export default {
       tempProduct: {
         imagesUrl:[],
       },
+      pages: {},
       productModal: null,
       delProductModal: null,
     };
@@ -236,6 +262,8 @@ export default {
         .then((res) => {
           //存資料
           this.products = res.data.products;
+          this.pages = res.data.pagination;
+          console.log(res);
         })
         .catch((err) => {
           alert(err.response.data.message);
