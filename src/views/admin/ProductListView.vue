@@ -68,27 +68,39 @@
                   <div class="col-sm-4">
                     <div class="mb-2">
                       <div class="mb-3">
-                        <label for="imageUrl" class="form-label">輸入圖片網址</label>
+                        <label for="imageUrl" class="form-label">請輸入主要產品圖網址</label>
                         <input type="text" class="form-control"
                                placeholder="請輸入圖片連結" id="imageUrl" v-model="tempProduct.imageUrl">
                       </div>
                       <img class="img-fluid" :src="tempProduct.imageUrl" alt="">
                     </div>
                     <div>
-                      <button class="btn btn-outline-primary btn-sm d-block w-100" @click.prevent="tempProduct.imagesUrl.push('')">
-                        新增圖片
-                      </button>
-                    </div>
-                    <div v-if="tempProduct.imagesUrl">
-                      <button class="btn btn-outline-danger btn-sm d-block w-100" @click="clearInput">
-                        刪除圖片
-                      </button>
+                      <h6>新增其他產品圖</h6>
+                      <!-- 判斷tempProduct.imageUrl是一個陣列，如果沒有就不要顯示 -->
+                      <div v-if="Array.isArray(tempProduct.imagesUrl)">
+                        <div v-for="(img, key) in tempProduct.imagesUrl" :key="key + 123">
+                          <img :src="img" alt="" class="img-fluid">
+                          <label for="imageUrl" class="form-label mt-3">請輸入圖片網址</label>
+                          <input type="text" class="form-control mb-3" v-model="tempProduct.imagesUrl[key]"> <!-- 綁索引位置才能在替換圖片網址時換成相對應位置的圖 -->
+                        </div>
+                        <button class="btn btn-outline-primary w-100 mb-3"
+                          v-if = "
+                          tempProduct.imagesUrl.length === 0 || 
+                          tempProduct.imagesUrl[tempProduct.imagesUrl.length -1]
+                          " @click.prevent="tempProduct.imagesUrl.push('')">
+                          新增圖片
+                        </button>
+                        <button class="btn btn-outline-danger mb-3 d-block w-100"
+                          v-else @click.prevent="tempProduct.imagesUrl.pop()">
+                          刪除圖片
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div class="col-sm-8">
                     <div class="mb-3">
                       <label for="title" class="form-label">標題</label>
-                      <input id="title" type="text" class="form-control" placeholder="請輸入標題" v-model="tempProduct.title">
+                      <input id="title" type="text" class="form-control" placeholder="請輸入標題" v-model.trim="tempProduct.title">
                     </div>
 
                     <div class="row">
@@ -182,7 +194,8 @@
 </template>
 
 <script>
-import { RouterView } from 'vue-router';
+/* eslint-disable no-unused-vars */
+//import { RouterView } from 'vue-router';
 import axios from 'axios';
 const { VITE_URL, VITE_PATH } = import.meta.env
 
@@ -191,31 +204,37 @@ export default {
     return {
       products: [],
       isNew: false, //表示當前 Modal 是新增或編輯的判斷依據 
-      tempProduct: {},
+      tempProduct: {
+        imagesUrl:[],
+      },
       productModal: null,
-      delProductModal: null
+      delProductModal: null,
     };
   },
 
   methods: {
-    checkAdmin() { //確認是否為管理員帳號
-      //取得token
-      const token = document.cookie.replace(/(?:(?:^|.*;\s*)leleToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
-      //預設帶入token
-      axios.defaults.headers.common['Authorization'] = token;
+    async checkAdmin() {
+      try {
+        // 取得 token
+        const token = document.cookie.replace(/(?:(?:^|.*;\s*)leleToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
+        //預設帶入token
+        axios.defaults.headers.common['Authorization'] = token;
 
-      this.axios.post(`${VITE_URL}V2/api/user/check`)
-        .then((res) => {
-          this.getProducts();
-        })
-        .catch((err) => {
-          alert(err.response.data.message);
-          this.$router.push({ name: 'LoginView' });
-        })
+        // 發送 POST 請求，使用 await 等待完成
+        await this.axios.post(`${VITE_URL}V2/api/user/check`);
+
+        // POST 請求成功，執行下一步操作
+        this.getProducts();
+      } catch (err) {
+        // POST 請求失敗，處理錯誤
+        alert(err.response?.data?.message || 'Error occurred.');
+        this.$router.push({ name: 'LoginView' });
+      }
     },
-    getProducts() { //取得產品
+    getProducts() { //取得產品，products 是代表要有分頁的，all沒有
       this.axios.get(`${VITE_URL}V2/api/${VITE_PATH}/admin/products`)
         .then((res) => {
+          //存資料
           this.products = res.data.products;
         })
         .catch((err) => {
@@ -228,12 +247,18 @@ export default {
     openModal(status, item){ //打開編輯視窗，status 判斷目前點擊的是 新增/編輯/刪除 按鈕；item 代表當前點擊的產品資料
       if (status === 'new'){
         //點擊新增btn，清空當前產品內容，開啟productModal
-        this.tempProduct = {};
+        this.tempProduct = {
+          imagesUrl: [],
+        };
         this.isNew = true;
         this.productModal.show();
       } else if (status === 'edit'){
         //點擊新增btn，將當前產品內容傳入，目的為串接刪除 API 需要取得產品的 id，開啟productModal
         this.tempProduct = {...item};
+        //如果不是陣列就補陣列以確保不論是否有圖片都能做新增圖片的行為(前面有預設tempProduct.imageUrl是一個陣列才顯示新增刪除按鈕)
+        if(!Array.isArray(this.tempProduct.imagesUrl)){
+          this.tempProduct.imagesUrl = []
+        }
         this.isNew = false;
         this.productModal.show();
       } else if (status === 'delete') {
