@@ -53,114 +53,7 @@
           </table>
         </div>
         <!-- Modal -->
-        <div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel"
-             aria-hidden="true">
-          <div class="modal-dialog modal-xl">
-            <div class="modal-content border-0">
-              <div class="modal-header bg-dark text-white">
-                <h5 id="productModalLabel" class="modal-title">
-                  <span>新增產品</span>
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="clearInput"></button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-sm-4">
-                    <div class="mb-2">
-                      <div class="mb-3">
-                        <label for="imageUrl" class="form-label">請輸入主要產品圖網址</label>
-                        <input type="text" class="form-control"
-                               placeholder="請輸入圖片連結" id="imageUrl" v-model="tempProduct.imageUrl">
-                      </div>
-                      <img class="img-fluid" :src="tempProduct.imageUrl" alt="">
-                    </div>
-                    <div>
-                      <h6>新增其他產品圖</h6>
-                      <!-- 判斷tempProduct.imageUrl是一個陣列，如果沒有就不要顯示 -->
-                      <div v-if="Array.isArray(tempProduct.imagesUrl)">
-                        <div v-for="(img, key) in tempProduct.imagesUrl" :key="key + 123">
-                          <img :src="img" alt="" class="img-fluid">
-                          <label for="imageUrl" class="form-label mt-3">請輸入圖片網址</label>
-                          <input type="text" class="form-control mb-3" v-model="tempProduct.imagesUrl[key]"> <!-- 綁索引位置才能在替換圖片網址時換成相對應位置的圖 -->
-                        </div>
-                        <button class="btn btn-outline-primary w-100 mb-3"
-                          v-if = "
-                          tempProduct.imagesUrl.length === 0 || 
-                          tempProduct.imagesUrl[tempProduct.imagesUrl.length -1]
-                          " @click.prevent="tempProduct.imagesUrl.push('')">
-                          新增圖片
-                        </button>
-                        <button class="btn btn-outline-danger mb-3 d-block w-100"
-                          v-else @click.prevent="tempProduct.imagesUrl.pop()">
-                          刪除圖片
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-8">
-                    <div class="mb-3">
-                      <label for="title" class="form-label">標題</label>
-                      <input id="title" type="text" class="form-control" placeholder="請輸入標題" v-model.trim="tempProduct.title">
-                    </div>
-
-                    <div class="row">
-                      <div class="mb-3 col-md-6">
-                        <label for="category" class="form-label">分類</label>
-                        <input id="category" type="text" class="form-control"
-                               placeholder="請輸入分類" v-model="tempProduct.category">
-                      </div>
-                      <div class="mb-3 col-md-6">
-                        <label for="price" class="form-label">單位</label>
-                        <input id="unit" type="text" class="form-control" placeholder="請輸入單位" v-model="tempProduct.unit">
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="mb-3 col-md-6">
-                        <label for="origin_price" class="form-label">原價</label>
-                        <input id="origin_price" type="number" min="0" class="form-control" placeholder="請輸入原價"  v-model="tempProduct.origin_price">
-                      </div>
-                      <div class="mb-3 col-md-6">
-                        <label for="price" class="form-label">售價</label>
-                        <input id="price" type="number" min="0" class="form-control"
-                               placeholder="請輸入售價" v-model="tempProduct.price">
-                      </div>
-                    </div>
-                    <hr>
-
-                    <div class="mb-3">
-                      <label for="description" class="form-label">產品描述</label>
-                      <textarea id="description" type="text" class="form-control"
-                                placeholder="請輸入產品描述" v-model="tempProduct.description">
-                    </textarea>
-                    </div>
-                    <div class="mb-3">
-                      <label for="content" class="form-label">說明內容</label>
-                      <textarea id="description" type="text" class="form-control"
-                                placeholder="請輸入說明內容" v-model="tempProduct.content">
-                    </textarea>
-                    </div>
-                    <div class="mb-3">
-                      <div class="form-check">
-                        <input id="is_enabled" class="form-check-input" type="checkbox"
-                               :true-value="1" :false-value="0"  v-model="tempProduct.is_enabled">
-                        <label class="form-check-label" for="is_enabled">是否啟用</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" @click="clearInput">
-                  取消
-                </button>
-                <button type="button" class="btn btn-primary" @click="updateProduct">
-                  確認
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Product-Modal :temp-Product="tempProduct" :updateProduct="updateProduct" ref="pModal"></Product-Modal>
         <!-- 刪除產品 -->
         <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
              aria-labelledby="delProductModalLabel" aria-hidden="true">
@@ -190,29 +83,10 @@
         <!-- Modal -->
         <!-- pagination -->
         <div class="container">
-          <nav aria-label="Page navigation">
-            <ul class="pagination">
-              <li class="page-item" :class="{disabled: !pages.has_pre}">
-                <a class="page-link" href="#" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
-              <li class="page-item"
-                :class="{
-                  active: page === pages.current_page
-                }"
-                v-for="page in pages.total_pages" :key="page +'forPage'">
-                <a class="page-link" href="#"
-                @click="getProducts(page)">{{ page }}
-                </a>
-              </li>
-              <li class="page-item" :class="{ disabled: !pages.has_next }" >
-                <a class="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
+          <PaginationItem
+              :pages="pages"
+              :get-products="getProducts"
+            ></PaginationItem>
         </div>
     </div>
   </main>
@@ -223,6 +97,9 @@
 //import { RouterView } from 'vue-router';
 import axios from 'axios';
 const { VITE_URL, VITE_PATH } = import.meta.env
+
+import ProductModal from '@/components/ProductModal.vue';
+import PaginationItem from '@/components/PaginationItem.vue';
 
 export default {
   data() {
@@ -257,8 +134,8 @@ export default {
         this.$router.push({ name: 'LoginView' });
       }
     },
-    getProducts() { //取得產品，products 是代表要有分頁的，all沒有
-      this.axios.get(`${VITE_URL}V2/api/${VITE_PATH}/admin/products`)
+    getProducts(page = 1) { //取得產品，products 是代表要有分頁的，all沒有
+      this.axios.get(`${VITE_URL}V2/api/${VITE_PATH}/admin/products?page=${page}`)
         .then((res) => {
           //存資料
           this.products = res.data.products;
@@ -279,7 +156,8 @@ export default {
           imagesUrl: [],
         };
         this.isNew = true;
-        this.productModal.show();
+        //this.productModal.show();
+        this.$refs.pModal.openModal();
       } else if (status === 'edit'){
         //點擊新增btn，將當前產品內容傳入，目的為串接刪除 API 需要取得產品的 id，開啟productModal
         this.tempProduct = {...item};
@@ -352,7 +230,12 @@ export default {
         backdrop: 'static'
       }
     )
+  },
+  components: {
+    PaginationItem,
+    ProductModal,
   }
+
 }
 
 </script>
