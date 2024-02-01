@@ -113,26 +113,35 @@
 
     data() {
       return {
-        productModal: null
-      };
+        productModal: null,
+        curProduct: {},
+      }
     },
+
+    watch: {
+      tempProduct(){
+        this.curProduct = {...this.tempProduct};
+      }
+    },
+
     methods: {
       openModal(){
         this.productModal.show()
       },
       closeModal(){
         this.productModal.hide()
-      }
+      },
     },
 
     mounted(){
       this.productModal = new this.$bs.Modal( //建立 modal 實體
-      document.getElementById("productModal"),
-      {
-        keyboard: false, //禁止 user 透過 Esc 按鍵關閉
-        backdrop: 'static' //禁止 user 點擊 modal 以外的地方關閉視窗
-      }
-    )
-    }
+        document.getElementById("productModal"),
+        {
+          keyboard: false, //禁止 user 透過 Esc 按鍵關閉
+          backdrop: 'static' //禁止 user 點擊 modal 以外的地方關閉視窗
+        }
+      )
+    },
+    
   }
 </script>

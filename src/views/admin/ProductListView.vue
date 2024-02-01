@@ -53,7 +53,10 @@
           </table>
         </div>
         <!-- Modal -->
-        <Product-Modal :temp-Product="tempProduct" :updateProduct="updateProduct" ref="pModal"></Product-Modal>
+        <Product-Modal
+         :temp-Product="tempProduct" 
+         :updateProduct="updateProduct" 
+          ref="pModal"></Product-Modal>
         <!-- 刪除產品 -->
         <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
              aria-labelledby="delProductModalLabel" aria-hidden="true">
@@ -166,7 +169,8 @@ export default {
           this.tempProduct.imagesUrl = []
         }
         this.isNew = false;
-        this.productModal.show();
+        //this.productModal.show();
+        this.$refs.pModal.openModal();
       } else if (status === 'delete') {
         this.tempProduct = { ...item };
         this.delProductModal.show();
@@ -177,7 +181,8 @@ export default {
         this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, { "data":this.tempProduct })
           .then((res) => {
             alert("產品新增成功");
-            this.productModal.hide();
+            //this.productModal.hide();
+            this.$refs.pModal.closeModal();
             this.getProducts();
 
           })
@@ -188,7 +193,8 @@ export default {
         this.axios.put(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`, { "data": this.tempProduct })
           .then((res) => {
             alert("產品更新成功");
-            this.productModal.hide();
+            //this.productModal.hide();
+            this.$refs.pModal.closeModal();
             this.getProducts();
           })
           .catch((err) => {
@@ -210,7 +216,7 @@ export default {
     clearInput(){ //取消新增產品時，清空輸入框和圖檔
       this.tempProduct.imagesUrl = [];
       this.tempProduct.imagesUrl.push('');
-    }
+    },
   },
 
   mounted() {
