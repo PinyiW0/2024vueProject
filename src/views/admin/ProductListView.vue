@@ -52,37 +52,17 @@
             </tbody>
           </table>
         </div>
-        <!-- Modal -->
+        <!-- ProductModal -->
         <Product-Modal
          :temp-Product="tempProduct" 
          :updateProduct="updateProduct" 
-          ref="pModal"></Product-Modal>
-        <!-- 刪除產品 -->
-        <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
-             aria-labelledby="delProductModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content border-0">
-              <div class="modal-header bg-danger text-white">
-                <h5 id="delProductModalLabel" class="modal-title">
-                  <span>刪除 {{ tempProduct.title }}</span>
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                是否刪除
-                <strong class="text-danger"></strong> 商品(刪除後將無法恢復)。
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                  取消
-                </button>
-                <button type="button" class="btn btn-danger" @click="delProduct">
-                  確認刪除
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+          ref="pModal"></Product-Modal> 
+          <!-- 定義ref用於呼叫元件中的方法 -->
+          <!-- 刪除產品 -->
+        <Del-Modal
+         :temp-Product="tempProduct"
+         :delProduct="delProduct"
+          ref="dModal"></Del-Modal>
         <!-- Modal -->
         <!-- pagination -->
         <div class="container">
@@ -102,6 +82,7 @@ import axios from 'axios';
 const { VITE_URL, VITE_PATH } = import.meta.env
 
 import ProductModal from '@/components/ProductModal.vue';
+import DelModal from '@/components/DelModal.vue';
 import PaginationItem from '@/components/PaginationItem.vue';
 
 export default {
@@ -173,7 +154,8 @@ export default {
         this.$refs.pModal.openModal();
       } else if (status === 'delete') {
         this.tempProduct = { ...item };
-        this.delProductModal.show();
+        //this.delProductModal.show();
+        this.$refs.dModal.openModal();
       }
     },
     updateProduct(){
@@ -181,10 +163,9 @@ export default {
         this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, { "data":this.tempProduct })
           .then((res) => {
             alert("產品新增成功");
+            this.getProducts();
             //this.productModal.hide();
             this.$refs.pModal.closeModal();
-            this.getProducts();
-
           })
           .catch((err) => {
             alert(err.response.data.message);
@@ -206,7 +187,7 @@ export default {
       this.axios.delete(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`)
         .then((res) => {
           alert(res.data.message);
-          this.delProductModal.hide();
+          this.$refs.dModal.closeModal();
           this.getProducts();
         })
         .catch((err) => {
@@ -240,7 +221,8 @@ export default {
   components: {
     PaginationItem,
     ProductModal,
-  }
+    DelModal,
+}
 
 }
 

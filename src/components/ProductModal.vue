@@ -113,7 +113,7 @@
 
     data() {
       return {
-        productModal: null,
+        productModal: null,//這個是為了處理bs的問題  
         curProduct: {},
       }
     },
