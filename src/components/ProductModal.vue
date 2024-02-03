@@ -135,7 +135,7 @@
         this.$emit('clear-input')
       },
       sendData(){
-        this.$emit('send-data', this.tempData)
+        this.$emit('send-data', this.curProduct)
       }
     },
 

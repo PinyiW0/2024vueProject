@@ -161,9 +161,9 @@ export default {
         this.$refs.dModal.openModal();
       }
     },
-    updateProduct(){
+    updateProduct(data){
       if (this.isNew){ //新增產品
-        this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, { "data":this.tempProduct })
+        this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, { data })
           .then((res) => {
             alert("產品新增成功");
             this.getProducts();
@@ -174,7 +174,7 @@ export default {
             alert(err.response.data.message);
           })
       } else { //修改產品
-        this.axios.put(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`, { "data": this.tempProduct })
+        this.axios.put(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`, { data })
           .then((res) => {
             alert("產品更新成功");
             //this.productModal.hide();
