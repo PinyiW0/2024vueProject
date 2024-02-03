@@ -7,14 +7,14 @@
           <h5 id="delProductModalLabel" class="modal-title">
             <span>刪除 {{ tempProduct.title }}</span>
           </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal" ></button>
         </div>
         <div class="modal-body">
           是否刪除
           <strong class="text-danger"></strong> 商品(刪除後將無法恢復)。
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" @click="closeModal">
             取消
           </button>
           <button type="button" class="btn btn-danger" @click="delProduct">
@@ -43,7 +43,7 @@ export default {
     },
     closeModal() {
       this.delProductModal.hide()
-    },
+    }
   },
 
   mounted() {

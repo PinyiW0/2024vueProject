@@ -32,7 +32,6 @@
 
 
 <script>
-//import { RouterView } from 'vue-router'
 const { VITE_URL } = import.meta.env
 export default {
   data() {

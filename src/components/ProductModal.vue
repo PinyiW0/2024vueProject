@@ -99,7 +99,7 @@
                   <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" @click="clearInput">
                     取消
                   </button>
-                  <button type="button" class="btn btn-primary" @click="updateProduct">
+                  <button type="button" class="btn btn-primary" @click="sendData">
                     確認
                   </button>
                 </div>
@@ -131,6 +131,12 @@
       closeModal(){
         this.productModal.hide()
       },
+      clearInput(){
+        this.$emit('clear-input')
+      },
+      sendData(){
+        this.$emit('send-data', this.tempData)
+      }
     },
 
     mounted(){

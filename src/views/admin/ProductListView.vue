@@ -56,13 +56,14 @@
         <Product-Modal
          :temp-Product="tempProduct" 
          :updateProduct="updateProduct" 
+         @clear-Input="clearInput"
+         @send-data="updateProduct"
           ref="pModal"></Product-Modal> 
           <!-- 定義ref用於呼叫元件中的方法 -->
           <!-- 刪除產品 -->
         <Del-Modal
          :temp-Product="tempProduct"
          :delProduct="delProduct"
-         @send-api="delProduct"
           ref="dModal"></Del-Modal>
         <!-- Modal -->
         <!-- pagination -->
@@ -85,7 +86,7 @@ const { VITE_URL, VITE_PATH } = import.meta.env
 import ProductModal from '@/components/ProductModal.vue';
 import DelModal from '@/components/DelModal.vue';
 import PaginationItem from '@/components/PaginationItem.vue';
-import { createLogger } from 'vite';
+
 
 export default {
   data() {
@@ -200,6 +201,7 @@ export default {
     clearInput(){ //取消新增產品時，清空輸入框和圖檔
       this.tempProduct.imagesUrl = [];
       this.tempProduct.imagesUrl.push('');
+      this.$refs.pModal.closeModal();
     },
   },
 
