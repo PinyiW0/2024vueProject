@@ -62,6 +62,7 @@
         <Del-Modal
          :temp-Product="tempProduct"
          :delProduct="delProduct"
+         @send-api="delProduct"
           ref="dModal"></Del-Modal>
         <!-- Modal -->
         <!-- pagination -->
@@ -84,6 +85,7 @@ const { VITE_URL, VITE_PATH } = import.meta.env
 import ProductModal from '@/components/ProductModal.vue';
 import DelModal from '@/components/DelModal.vue';
 import PaginationItem from '@/components/PaginationItem.vue';
+import { createLogger } from 'vite';
 
 export default {
   data() {
@@ -184,6 +186,7 @@ export default {
       }
     },
     delProduct(){
+      //console.log(this.tempProduct.id);
       this.axios.delete(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`)
         .then((res) => {
           alert(res.data.message);

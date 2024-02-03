@@ -29,7 +29,9 @@
 <script>
 export default {
   props:['tempProduct', 'delProduct'],
-
+  define: {
+    'process.env': '{}',
+  },
   data(){
     return {
       delProductModal: null,
@@ -56,4 +58,8 @@ export default {
     )
   },
 }
+// @click="snedApi"
+// snedApi(){
+//   this.$emit('send-api', this.tempProduct.id);
+// }
 </script>

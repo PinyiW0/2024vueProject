@@ -24,7 +24,7 @@
         </div>
       </div>
       <p class="mt-5 mb-3 text-muted text-center">
-        &copy; 2024 六角學院 VUE直播班 - 第二週主線作業
+        &copy; 2024 六角學院 VUE直播班 - 主線作業
       </p>
     </div>
   </div>
@@ -32,8 +32,8 @@
 
 
 <script>
-import { RouterView } from 'vue-router'
-const { VITE_URL, VITE_PATH } = import.meta.env
+//import { RouterView } from 'vue-router'
+const { VITE_URL } = import.meta.env
 export default {
   data() {
     return {
