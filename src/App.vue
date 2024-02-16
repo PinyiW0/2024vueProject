@@ -15,7 +15,8 @@ export default {
           <!-- <RouterLink class="me-3 my-3" to="/">Home</RouterLink>
           <RouterLink class="me-3 my-3" to="/about">About</RouterLink> -->
           <RouterLink class="me-3 my-3" to="/LoginView">AdminLogin</RouterLink>
-          <RouterLink to="/productList">ProductList</RouterLink>
+          <RouterLink class="me-3 my-3" to="/productList">ProductList</RouterLink>
+          <RouterLink class="me-3 my-3" to="/ProductsView">ProductsView</RouterLink>
         </nav>
       </div>
   </header>

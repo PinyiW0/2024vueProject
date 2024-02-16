@@ -1,78 +1,68 @@
 <template>
   <main>
     <div id="app">
-        <div class="container">
-          <div class="text-end mt-4">
-            <button class="btn btn-primary" @click.prevent="openModal('new')">
-              建立新的產品
-            </button>
-          </div>
-          <table class="table table-hover mt-4">
-            <thead>
-              <tr>
-                <th width="120">
-                  分類
-                </th>
-                <th>產品名稱</th>
-                <th width="120">
-                  原價
-                </th>
-                <th width="120">
-                  售價
-                </th>
-                <th width="100">
-                  是否啟用
-                </th>
-                <th width="120">
-                  編輯
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in products" :key="item.id">
-                <td>{{ item.category }}</td>
-                <td>{{ item.title }}</td>
-                <td class="text-end">{{ item.origin_price }}</td>
-                <td class="text-end">{{ item.price }}</td>
-                <td>
-                  <span class="text-success" v-if="item.is_enabled">啟用</span>
-                  <span class="text-danger" v-else>未啟用</span>
-                </td>
-                <td>
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-outline-primary btn-sm" @click.prevent="openModal('edit', item)">
-                      編輯
-                    </button>
-                    <button type="button" class="btn btn-outline-danger btn-sm" @click.prevent="openModal('delete', item)">
-                      刪除
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="container">
+        <div class="text-end mt-4">
+          <button class="btn btn-primary" @click.prevent="openModal('new')">
+            建立新的產品
+          </button>
         </div>
-        <!-- ProductModal -->
-        <Product-Modal
-         :temp-Product="tempProduct" 
-         :updateProduct="updateProduct" 
-         @clear-Input="clearInput"
-         @send-data="updateProduct"
-          ref="pModal"></Product-Modal> 
-          <!-- 定義ref用於呼叫元件中的方法 -->
-          <!-- 刪除產品 -->
-        <Del-Modal
-         :temp-Product="tempProduct"
-         :delProduct="delProduct"
-          ref="dModal"></Del-Modal>
-        <!-- Modal -->
-        <!-- pagination -->
-        <div class="container">
-          <PaginationItem
-              :pages="pages"
-              :get-products="getProducts"
-            ></PaginationItem>
-        </div>
+        <table class="table table-hover mt-4">
+          <thead>
+            <tr>
+              <th width="120">
+                分類
+              </th>
+              <th>產品名稱</th>
+              <th width="120">
+                原價
+              </th>
+              <th width="120">
+                售價
+              </th>
+              <th width="100">
+                是否啟用
+              </th>
+              <th width="120">
+                編輯
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in products" :key="item.id">
+              <td>{{ item.category }}</td>
+              <td>{{ item.title }}</td>
+              <td class="text-end">{{ item.origin_price }}</td>
+              <td class="text-end">{{ item.price }}</td>
+              <td>
+                <span class="text-success" v-if="item.is_enabled">啟用</span>
+                <span class="text-danger" v-else>未啟用</span>
+              </td>
+              <td>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-outline-primary btn-sm" @click.prevent="openModal('edit', item)">
+                    編輯
+                  </button>
+                  <button type="button" class="btn btn-outline-danger btn-sm" @click.prevent="openModal('delete', item)">
+                    刪除
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- ProductModal -->
+      <Product-Modal :temp-Product="tempProduct" :updateProduct="updateProduct" @clear-Input="clearInput"
+        @send-data="updateProduct" ref="pModal"></Product-Modal>
+      <!-- 定義ref用於呼叫元件中的方法 -->
+      <!-- 刪除產品 -->
+      <Del-Modal :temp-Product="tempProduct" :temp-Pvalue="tempProduct.value" :delProduct="delProduct" ref="dModal"></Del-Modal>
+      <!-- Modal -->
+      <!-- pagination -->
+      <div class="container">
+        <PaginationItem :pages="pages" :get-products="getProducts"></PaginationItem>
+      </div>
     </div>
   </main>
 </template>
@@ -94,7 +84,7 @@ export default {
       products: [],
       isNew: false, //表示當前 Modal 是新增或編輯的判斷依據 
       tempProduct: {
-        imagesUrl:[],
+        imagesUrl: [],
       },
       pages: {},
       productModal: null,
@@ -136,8 +126,8 @@ export default {
     openProduct(item) {
       this.tempProduct = item;
     },
-    openModal(status, item){ //打開編輯視窗，status 判斷目前點擊的是 新增/編輯/刪除 按鈕；item 代表當前點擊的產品資料
-      if (status === 'new'){
+    openModal(status, item) { //打開編輯視窗，status 判斷目前點擊的是 新增/編輯/刪除 按鈕；item 代表當前點擊的產品資料
+      if (status === 'new') {
         //點擊新增btn，清空當前產品內容，開啟productModal
         this.tempProduct = {
           imagesUrl: [],
@@ -145,24 +135,24 @@ export default {
         this.isNew = true;
         //this.productModal.show();
         this.$refs.pModal.openModal();
-      } else if (status === 'edit'){
+      } else if (status === 'edit') {
         //點擊新增btn，將當前產品內容傳入，目的為串接刪除 API 需要取得產品的 id，開啟productModal
-        this.tempProduct = {...item};
+        this.tempProduct = { ...item };
         //如果不是陣列就補陣列以確保不論是否有圖片都能做新增圖片的行為(前面有預設tempProduct.imageUrl是一個陣列才顯示新增刪除按鈕)
-        if(!Array.isArray(this.tempProduct.imagesUrl)){
+        if (!Array.isArray(this.tempProduct.imagesUrl)) {
           this.tempProduct.imagesUrl = []
         }
         this.isNew = false;
         //this.productModal.show();
         this.$refs.pModal.openModal();
       } else if (status === 'delete') {
-        this.tempProduct = { ...item };
+        this.tempProduct = { item };
         //this.delProductModal.show();
         this.$refs.dModal.openModal();
       }
     },
-    updateProduct(data){
-      if (this.isNew){ //新增產品
+    updateProduct(data) {
+      if (this.isNew) { //新增產品
         this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, { data })
           .then((res) => {
             alert("產品新增成功");
@@ -186,7 +176,7 @@ export default {
           })
       }
     },
-    delProduct(){
+    delProduct() {
       //console.log(this.tempProduct.id);
       this.axios.delete(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`)
         .then((res) => {
@@ -198,7 +188,7 @@ export default {
           alert(err.response.data.message);
         })
     },
-    clearInput(){ //取消新增產品時，清空輸入框和圖檔
+    clearInput() { //取消新增產品時，清空輸入框和圖檔
       this.tempProduct.imagesUrl = [];
       this.tempProduct.imagesUrl.push('');
       this.$refs.pModal.closeModal();
@@ -227,7 +217,7 @@ export default {
     PaginationItem,
     ProductModal,
     DelModal,
-}
+  }
 
 }
 

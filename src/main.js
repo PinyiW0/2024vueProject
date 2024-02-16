@@ -7,6 +7,8 @@ import { createPinia } from 'pinia'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
+import { Field, Form, ErrorMessage } from 'vee-validate';
+
 import VueSweetalert2 from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 
@@ -21,6 +23,9 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(VueAxios, axios)
+app.component('VForm', Form);
+app.component('VField', Field);
+app.component('ErrorMessage', ErrorMessage);
 app.use(VueSweetalert2)
 app.use(LoadingPlugin)
 app.config.globalProperties.$bs = bootstrap

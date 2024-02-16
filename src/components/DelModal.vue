@@ -5,13 +5,13 @@
       <div class="modal-content border-0">
         <div class="modal-header bg-danger text-white">
           <h5 id="delProductModalLabel" class="modal-title">
-            <span>刪除 {{ tempProduct.title }}</span>
+            <span>刪除 {{ tempProduct?.item?.title }}</span>
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal" ></button>
         </div>
         <div class="modal-body">
           是否刪除
-          <strong class="text-danger"></strong> 商品(刪除後將無法恢復)。
+          <strong class="text-danger">{{ tempProduct?.item?.title }}</strong> 商品(刪除後將無法恢復)。
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" @click="closeModal">
@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  props: ['tempProduct', 'delProduct'],
+  props: ['tempProduct', 'delProduct','tempPvalue'],
 
   data() {
     return {
@@ -47,6 +47,7 @@ export default {
   },
 
   mounted() {
+    console.log(this.tempProduct, 133);
     this.delProductModal = new this.$bs.Modal(
       document.getElementById("delProductModal"),
       {

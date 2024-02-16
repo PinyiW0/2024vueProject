@@ -46,23 +46,14 @@ export default {
     login() {
       this.axios.post(`${VITE_URL}V2/admin/signin`, this.user)
         .then((res) => {
-          if (!res) {
-            alert('不得填入空資訊');
-            return;
-          }
-
-          if (res.status === 200) {
-            //使用解構方式取出 token 和有效時間資料
-            const { token, expired } = res.data;
-            //儲存在 cookie 裡面
-            document.cookie = `leleToken=${token}; expires=${new Date(expired)};`;
-            //顯示登入成功
-            window.alert('登入成功');
-            //切換分頁
-            this.$router.push({ name: 'ProductListView' });
-          } else {
-            this.$message.error('登入失敗');
-          }
+          //使用解構方式取出 token 和有效時間資料
+          const { token, expired } = res.data;
+          //儲存在 cookie 裡面
+          document.cookie = `leleToken=${token}; expires=${new Date(expired)};`;
+          //顯示登入成功
+          window.alert('登入成功');
+          //切換分頁
+          this.$router.push({ name: 'ProductListView' });
         })
         .catch((err) => {
           alert(err.response.data.message);
