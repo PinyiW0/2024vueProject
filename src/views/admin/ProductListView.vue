@@ -71,7 +71,7 @@
 /* eslint-disable no-unused-vars */
 //import { RouterView } from 'vue-router';
 import axios from 'axios';
-const { VITE_URL, VITE_PATH } = import.meta.env
+const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env
 
 import ProductModal from '@/components/ProductModal.vue';
 import DelModal from '@/components/DelModal.vue';
@@ -101,7 +101,7 @@ export default {
         axios.defaults.headers.common['Authorization'] = token;
 
         // 發送 POST 請求，使用 await 等待完成
-        await this.axios.post(`${VITE_URL}V2/api/user/check`);
+        await this.axios.post(`${VITE_APP_URL}V2/api/user/check`);
 
         // POST 請求成功，執行下一步操作
         this.getProducts();
@@ -112,7 +112,7 @@ export default {
       }
     },
     getProducts(page = 1) { //取得產品，products 是代表要有分頁的，all沒有
-      this.axios.get(`${VITE_URL}V2/api/${VITE_PATH}/admin/products?page=${page}`)
+      this.axios.get(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/admin/products?page=${page}`)
         .then((res) => {
           //存資料
           this.products = res.data.products;
@@ -153,7 +153,7 @@ export default {
     },
     updateProduct(data) {
       if (this.isNew) { //新增產品
-        this.axios.post(`${VITE_URL}V2/api/${VITE_PATH}/admin/product`, { data })
+        this.axios.post(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/admin/product`, { data })
           .then((res) => {
             alert("產品新增成功");
             this.getProducts();
@@ -164,7 +164,7 @@ export default {
             alert(err.response.data.message);
           })
       } else { //修改產品
-        this.axios.put(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`, { data })
+        this.axios.put(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`, { data })
           .then((res) => {
             alert("產品更新成功");
             //this.productModal.hide();
@@ -178,7 +178,7 @@ export default {
     },
     delProduct() {
       //console.log(this.tempProduct.id);
-      this.axios.delete(`${VITE_URL}V2/api/${VITE_PATH}/admin/product/${this.tempProduct.id}`)
+      this.axios.delete(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`)
         .then((res) => {
           alert(res.data.message);
           this.$refs.dModal.closeModal();
