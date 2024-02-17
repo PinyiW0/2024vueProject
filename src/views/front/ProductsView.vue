@@ -12,43 +12,45 @@
               <th></th>
             </tr>
           </thead>
+          <tbody>
+            <tr v-for="product in products" :key="product.id">
+              <td style="width: 200px">
+                <div style="
+                  height: 150px;
+                  background-size: cover;
+                  background-position: center;
+                  " :style="{
+                    backgroundImage: `url(${product.imageUrl})`
+                  }"></div>
+              </td>
+              <td>
+                {{ product.title }}
+              </td>
+              <td>
+                <div class="h5" v-if="product.origin_price === product.price">{{ product.price }} 元</div>
+                <div v-else>
+                  <del class="h6">原價 {{ product.origin_price }} 元</del>
+                  <div class="h5">現在只要 {{ product.price }} 元</div>
+                </div>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    @click="openModal(product)">
+                    <i class="fas fa-spinner fa-pulse"></i>
+                    查看更多
+                  </button>
+                  <button type="button" class="btn btn-outline-danger">
+                    <i class="fas fa-spinner fa-pulse"></i>
+                    加到購物車
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
         </table>
-        <tbody>
-          <tr v-for="product in products" :key="product.id">
-            <td style="width: 200px">
-              <div
-              style="
-                 height: 150px;
-                 background-size: cover;
-                 background-position: center;
-                 "
-                 :style="{
-                  backgroundImage:`url(${product.imageUrl})`
-                 }"
-                 ></div>
-            </td>
-            <td>
-              {{ }}
-            </td>
-            <td>
-              <div class="h5">{{ }} 元</div>
-              <del class="h6">原價 {{ }} 元</del>
-              <div class="h5">現在只要 {{ }} 元</div>
-            </td>
-            <td>
-              <div class="btn-group btn-group-sm">
-                <button type="button" class="btn btn-outline-secondary">
-                  <i class="fas fa-spinner fa-pulse"></i>
-                  查看更多
-                </button>
-                <button type="button" class="btn btn-outline-danger">
-                  <i class="fas fa-spinner fa-pulse"></i>
-                  加到購物車
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
         <!-- 購物車列表 -->
         <div class="text-end">
           <button class="btn btn-outline-danger" type="button">清空購物車</button>
@@ -79,8 +81,7 @@
               <td>
                 <div class="input-group input-group-sm">
                   <div class="input-group mb-3">
-                    <input 
-                          min="1" type="number" class="form-control">
+                    <input min="1" type="number" class="form-control">
                     <span class="input-group-text" id="basic-addon2">{{ }}</span>
                   </div>
                 </div>
@@ -104,60 +105,38 @@
         </tfoot>
       </div>
     </div>
+  
     <!-- 訂單資訊輸入表 -->
     <div class="container">
       <div class="my-5 row justify-content-center">
         <v-form @submit="onSubmit" ref="form" class="col-md-6" v-slot="{ errors }">
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <v-field
-              id="email"
-              name="email"
-              type="email"
-              class="form-control"
-              rules="email|required"
-              :class="{ 'is-invalid': errors['email'] }"
-              placeholder="請輸入 Email">
+            <v-field id="email" name="email" type="email" class="form-control" rules="email|required"
+              :class="{ 'is-invalid': errors['email'] }" placeholder="請輸入 Email">
             </v-field>
             <error-message name="email" class="invalid-feedback"></error-message>
           </div>
 
           <div class="mb-3">
             <label for="name" class="form-label">收件人姓名</label>
-            <v-field
-              id="name"
-              name="姓名"
-              type="text"
-              class="form-control"
-              :class="{ 'is-invalid': errors['姓名'] }"
-              placeholder="請輸入姓名"
-              rules="required">
+            <v-field id="name" name="姓名" type="text" class="form-control" :class="{ 'is-invalid': errors['姓名'] }"
+              placeholder="請輸入姓名" rules="required">
             </v-field>
             <error-message name="姓名" class="invalid-feedback"></error-message>
           </div>
 
           <div class="mb-3">
             <label for="tel" class="form-label">收件人電話</label>
-            <v-field
-              id="tel"
-              name="電話"
-              type="text"
-              class="form-control"
-              :rules="isPhone"
-              :class="{ 'is-invalid': errors['電話'] }"
-              placeholder="請輸入電話">
+            <v-field id="tel" name="電話" type="text" class="form-control" :rules="isPhone"
+              :class="{ 'is-invalid': errors['電話'] }" placeholder="請輸入電話">
             </v-field>
             <error-message name="電話" class="invalid-feedback"></error-message>
           </div>
 
           <div class="mb-3">
             <label for="address" class="form-label">收件人地址</label>
-            <v-field
-              id="address"
-              name="地址"
-              type="text"
-              class="form-control"
-              :class="{ 'is-invalid': errors['地址'] }"
+            <v-field id="address" name="地址" type="text" class="form-control" :class="{ 'is-invalid': errors['地址'] }"
               placeholder="請輸入地址" rules="required">
             </v-field>
             <error-message name="地址" class="invalid-feedback"></error-message>
@@ -165,7 +144,8 @@
 
           <div class="mb-3">
             <label for="message" class="form-label">留言</label>
-            <textarea id="message" class="form-control" cols="30" rows="10" placeholder="有什麼想跟我們說的都歡迎留言(´▽`ʃ♡ƪ)"></textarea>
+            <textarea id="message" class="form-control" cols="30" rows="10"
+              placeholder="有什麼想跟我們說的都歡迎留言(´▽`ʃ♡ƪ)"></textarea>
           </div>
           <div class="text-end">
             <button type="submit" class="btn btn-danger">送出訂單</button>
@@ -173,12 +153,17 @@
         </v-form>
       </div>
     </div>
+    <!-- 查看更多 modal  -->
+    <user-product-more-modal
+      :temp-data="tempData"
+      ref="userProductMoreModal"
+     />
   </div>
 </template>
 
 <script>
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env
-
+import UserProductMoreModal from '@/components/UserProductMoreModal.vue';
 import { defineRule, configure } from 'vee-validate';
 // 引入 VeeValidate 的驗證規則
 import * as AllRules from '@vee-validate/rules';
@@ -204,16 +189,26 @@ setLocale('zh_TW');
 export default {
   data() {
     return {
-      products: []
-    }
+      products: null,
+      tempData: {},
+      userPrductMoreModal: null
+    };
   },
   methods: {
     //前台客戶取得產品列表
     getProducts() {
       this.axios.get(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/products/all`)
-        .then( res => {
+        .then(res => {
           this.products = res.data.products
         })
+        .catch(err => {
+          console.log(err.res.data.message);
+        })
+    },
+    //打開 UserProductMoreModal
+    openModal(product){
+      this.$refs.userProductMoreModal.openModal();
+      this.tempData = product;
     },
 
     //以下為驗證
@@ -227,6 +222,9 @@ export default {
       const phoneNumber = /^(09)[0-9]{8}$/
       return phoneNumber.test(value) ? true : '需要正確的電話號碼'
     }
+  },
+  components: {
+    UserProductMoreModal,
   },
   mounted() {
     this.getProducts()

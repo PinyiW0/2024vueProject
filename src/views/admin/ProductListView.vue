@@ -57,7 +57,7 @@
         @send-data="updateProduct" ref="pModal"></Product-Modal>
       <!-- 定義ref用於呼叫元件中的方法 -->
       <!-- 刪除產品 -->
-      <Del-Modal :temp-Product="tempProduct" :temp-Pvalue="tempProduct.value" :delProduct="delProduct" ref="dModal"></Del-Modal>
+      <Del-Modal :temp-Product="tempProduct" :delProduct="delProduct" ref="dModal"></Del-Modal>
       <!-- Modal -->
       <!-- pagination -->
       <div class="container">
