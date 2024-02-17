@@ -140,7 +140,7 @@
             <tfoot>
               <tr>
                 <td colspan="3" class="text-end">總計</td>
-                <td class="text-end">{{ cart?.final_total }}</td>
+                <td class="text-end">{{ carts?.final_total }} 元</td>
               </tr>
             </tfoot>
           </table>
@@ -234,6 +234,7 @@ export default {
       products: null,
       tempData: {},
       userPrductMoreModal: null,
+      carts: {},
       status: {
         addCartLoading:'',
         cartQtyLoading:'',
@@ -280,6 +281,7 @@ export default {
       this.axios
         .get(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/cart`)
         .then(res => {
+          console.log(res);
           this.carts = res.data.data;
           console.log(this.carts);
         })
