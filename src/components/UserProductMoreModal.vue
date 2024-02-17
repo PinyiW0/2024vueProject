@@ -12,7 +12,7 @@
       <div class="modal-content border-0">
         <div class="modal-header bg-dark text-white">
           <h5 class="modal-title" id="exampleModalLabel">
-            <span>{{tempData.title }}</span>
+            <span>{{ tempData.title }}</span>
           </h5>
           <button
             type="button"
@@ -24,21 +24,33 @@
           </button>
         </div>
         <div class="modal-body">
-          <div class="row">
+          <div class="row my-3">
             <div class="col-sm-6">
-              <img class="img-fluid" src="..." alt="">
+              <img class="img-fluid" :src="tempData.imageUrl" alt="">
             </div>
             <div class="col-sm-6">
               <span class="badge bg-primary rounded-pill">{{ }}</span>
-              <p>商品描述：{{ }}</p>
-              <p>商品內容：{{ }}</p>
-              <div class="h5">{{ }} 元</div>
-              <del class="h6">原價 {{ }} 元</del>
-              <div class="h5">現在只要 {{ }} 元</div>
+              <h6>商品描述：</h6>
+              <p>{{ tempData.description }}</p>
+              <h6>商品內容：</h6>
+              <p>{{ tempData.content }}</p>
+              <div class="h5" v-if="tempData.origin_price === tempData.price">{{ tempData.price }} 元</div>
+                <div v-else>
+                  <del class="h6">原價 {{ tempData.origin_price }} 元</del>
+                  <div class="h5 text-danger">銷售價 {{ tempData.price }} 元</div>
+                </div>
               <div>
-                <div class="input-group">
-                  <input type="number" class="form-control" min="1">
-                  <button type="button" class="btn btn-primary">加入購物車</button>
+                <div class="input-group mb-3">
+                  <!-- <input type="number" class="form-control" min="1" v-model="qty"> -->
+                  <select name="" id="" class="form-control" v-model="qty">
+                    <option :value="i" v-for="i in 20" :key="i">{{ i }}</option>
+                  </select>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="addToCart(tempData.id, qty)"
+                    >加入購物車
+                  </button>
                 </div>
               </div>
             </div>
@@ -51,11 +63,12 @@
 
 <script>
 export default {
-  props:['tempData'],
+  props:['tempData','addToCart'],
   data() {
     return {
       userProductMoreModal: null,
       pData: {},
+      qty: 1,
     };
   },
 
@@ -65,11 +78,17 @@ export default {
     },
     closeModal() {
       this.userProductMoreModal.hide();
+      this.qty = 1;
     },
   },
 
+  watch: {
+    tempData(){
+      this.qty = 1;
+    }
+  },
+
   mounted() {
-    console.log(this.tempData);
     this.userProductMoreModal = new this.$bs.Modal(this.$refs.userProductMoreModal, {
       keyboard: false,
       backdrop: 'static',

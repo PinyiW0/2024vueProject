@@ -42,8 +42,15 @@
                     <i class="fas fa-spinner fa-pulse"></i>
                     查看更多
                   </button>
-                  <button type="button" class="btn btn-outline-danger">
-                    <i class="fas fa-spinner fa-pulse"></i>
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger"
+                    :disabled="product.id === status.addCartLoading"
+                    @click="addToCart(product.id)">
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      aria-hidden="true"
+                      v-if="product.id === status.addCartLoading"></span>
                     加到購物車
                   </button>
                 </div>
@@ -52,57 +59,91 @@
           </tbody>
         </table>
         <!-- 購物車列表 -->
-        <div class="text-end">
-          <button class="btn btn-outline-danger" type="button">清空購物車</button>
-        </div>
-        <thead>
-          <tr>
-            <th></th>
-            <th>品名</th>
-            <th style="width: 150px">數量/單位</th>
-            <th>單價</th>
-          </tr>
-        </thead>
-        <tbody>
-          <template>
-            <tr>
-              <td>
-                <button type="button" class="btn btn-outline-danger btn-sm">
-                  <i class="fas fa-spinner fa-pulse"></i>
-                  x
-                </button>
-              </td>
-              <td>
-                {{ }}
-                <div class="text-success">
-                  已套用優惠券
-                </div>
-              </td>
-              <td>
-                <div class="input-group input-group-sm">
-                  <div class="input-group mb-3">
-                    <input min="1" type="number" class="form-control">
-                    <span class="input-group-text" id="basic-addon2">{{ }}</span>
+          <div class="text-end">
+            <button
+              class="btn btn-outline-danger"
+              type="button"
+              @click="removeAllCart"
+              >
+              清空購物車
+            </button>
+          </div>
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th></th>
+                <th>品名</th>
+                <th style="width: 200px">數量/單位</th>
+                <th>單價</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="cart in carts?.carts" :key="cart.id">
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm"
+                    @click="removeCartItem(cart.id)"
+                    :disabled="status.cartQtyLoading === cart.id"
+                    >
+                    <i class="fas fa-spinner fa-pulse"></i>
+                    x
+                  </button>
+                </td>
+                <td>
+                  {{ cart?.product?.title }}
+                </td>
+                <td>
+                  <div class="input-group input-group-sm">
+                    <div class="input-group mb-3">
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        :disabled="cart.qty === 1"
+                        v-if="cart.qty > 1"
+                        @click="cart.qty--;changeCartQty(cart, cart.qty)"
+                        > - 
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        v-else
+                        @click="removeCartItem(cart.id)"
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                          <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                        </svg>
+                      </button>
+                      <input min="1" type="number"
+                        class="form-control"
+                        v-model="cart.qty"
+                        :disabled="cart.id === status.cartQtyLoading"
+                        readonly
+                        />
+                        <span class="input-group-text" id="basic-addon2">
+                          {{ cart.product.unit }}
+                        </span>
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        @click="cart.qty++;changeCartQty(cart, cart.qty)"
+                        > + 
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td class="text-end">
-                <small class="text-success">折扣價：</small>
-                {{ }}
-              </td>
-            </tr>
-          </template>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="3" class="text-end">總計</td>
-            <td class="text-end">{{ }}</td>
-          </tr>
-          <tr>
-            <td colspan="3" class="text-end text-success">折扣價</td>
-            <td class="text-end text-success">{{ }}</td>
-          </tr>
-        </tfoot>
+                </td>
+                <td class="text-end">
+                  {{ cart?.total }}
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="text-end">總計</td>
+                <td class="text-end">{{ cart?.final_total }}</td>
+              </tr>
+            </tfoot>
+          </table>
       </div>
     </div>
   
@@ -156,6 +197,7 @@
     <!-- 查看更多 modal  -->
     <user-product-more-modal
       :temp-data="tempData"
+      :add-to-cart="addToCart"
       ref="userProductMoreModal"
      />
   </div>
@@ -191,7 +233,11 @@ export default {
     return {
       products: null,
       tempData: {},
-      userPrductMoreModal: null
+      userPrductMoreModal: null,
+      status: {
+        addCartLoading:'',
+        cartQtyLoading:'',
+      }
     };
   },
   methods: {
@@ -202,13 +248,88 @@ export default {
           this.products = res.data.products
         })
         .catch(err => {
-          console.log(err.res.data.message);
+          console.log(err);
         })
     },
     //打開 UserProductMoreModal
     openModal(product){
       this.$refs.userProductMoreModal.openModal();
       this.tempData = product;
+    },
+    //加入購物車
+    addToCart( productId, qty = 1 ) {
+      const order = {
+        product_id: productId,
+        qty,
+      };
+      this.status.addCartLoading = productId;
+      this.axios
+        .post(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/cart`, { data: order } )
+        .then(res => {
+          console.log(res.data.message);
+          this.status.addCartLoading = '';//加入購物車後清掉loading狀態
+          this.getCart();
+          this.$refs.userProductMoreModal.closeModal();
+        })
+        .catch(err => {
+          console.log(err.response.data.message);
+        })
+    },
+    //取得購物車列表
+    getCart(){
+      this.axios
+        .get(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/cart`)
+        .then(res => {
+          this.carts = res.data.data;
+          console.log(this.carts);
+        })
+        .catch(err => {
+          console.log(err.response.data.message);
+        })
+    },
+    //調整購物車數量
+    changeCartQty( item, qty = 1 ){
+      const order = {
+        product_id: item.product_id,
+        qty,
+      };
+      this.status.cartQtyLoading = item.id;
+      this.axios
+        .put(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/cart/${item.id}`, { data: order })
+        .then(res => {
+          console.log(res.data.message);
+          this.status.cartQtyLoading = '';//清掉loading狀態
+          this.getCart();
+        })
+        .catch(err => {
+          console.log(err.response.data.message);
+        })
+    },
+    //刪除單一品項
+    removeCartItem(id) {
+      this.status.cartQtyLoading = id;
+      this.axios
+        .delete(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/cart/${id}`)
+        .then(res => {
+          console.log(res);
+          this.status.cartQtyLoading = '';//清掉loading狀態
+          this.getCart();
+        })
+        .catch(err => {
+          console.log(err.response.data.message);
+        })
+    },
+    //刪除全品項
+    removeAllCart() {
+      this.axios
+        .delete(`${VITE_APP_URL}V2/api/${VITE_APP_PATH}/carts`)
+        .then(res => {
+          console.log(res.data.message);
+          this.getCart();
+        })
+        .catch(err => {
+          console.log(err.response.data.message);
+        })
     },
 
     //以下為驗證
@@ -227,7 +348,8 @@ export default {
     UserProductMoreModal,
   },
   mounted() {
-    this.getProducts()
+    this.getProducts();
+    this.getCart()
   }
 }
 </script>
