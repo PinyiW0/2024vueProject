@@ -108,7 +108,7 @@ export default {
       } catch (err) {
         // POST 請求失敗，處理錯誤
         alert(err.response?.data?.message || 'Error occurred.');
-        this.$router.push({ name: 'LoginView' });
+        this.$router.push({ name: 'login' });
       }
     },
     getProducts(page = 1) { //取得產品，products 是代表要有分頁的，all沒有

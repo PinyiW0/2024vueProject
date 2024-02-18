@@ -4,22 +4,45 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
+  linkActiveClass: 'active',
   routes: [
-    {
-      path: '/LoginView',
-      name: 'LoginView',
-      component: () => import('../views/admin/LoginView.vue')
+    { // 前台
+      path: '/',
+      component: () => import('../views/front/FrontView.vue'),
+      children: [
+        { // 首頁
+          path: 'home',
+          name: 'home',
+          component: () => import('../views/front/HomeView.vue'),
+        },
+        { // 產品列表頁
+          path: 'products',
+          name: 'products',
+          component: () => import('../views/front/ProductsView.vue'),
+        },
+        { // 購物車頁
+          path: 'cart',
+          name: 'cart',
+          component: () => import('../views/front/CartView.vue'),
+        },
+      ],
     },
-    {
-      path: '/ProductList',
-      name: 'ProductListView',
-      component: () => import('../views/admin/ProductListView.vue')
+    { // 後台
+      path: '/admin',
+      component: () => import('../views/admin/DashboardView.vue'),
+      children: [
+        { // 後台登入頁
+          path: 'login',
+          name: 'login',
+          component: () => import('../views/admin/LoginView.vue'),
+        },
+        { // 產品列表頁
+          path: 'productlist',
+          name: 'productlist',
+          component: () => import('../views/admin/ProductListView.vue'),
+        },
+      ],
     },
-    {
-      path: '/ProductsView',
-      name: 'ProductsView',
-      component: () => import('../views/front/ProductsView.vue')
-    }
   ]
 })
 

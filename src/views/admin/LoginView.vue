@@ -32,7 +32,7 @@
 
 
 <script>
-const { VITE_URL } = import.meta.env
+const { VITE_APP_URL } = import.meta.env
 export default {
   data() {
     return {
@@ -44,8 +44,9 @@ export default {
   },
   methods: {
     login() {
-      this.axios.post(`${VITE_URL}V2/admin/signin`, this.user)
+      this.axios.post(`${VITE_APP_URL}V2/admin/signin`, this.user)
         .then((res) => {
+          console.log(res);
           //使用解構方式取出 token 和有效時間資料
           const { token, expired } = res.data;
           //儲存在 cookie 裡面
@@ -53,10 +54,11 @@ export default {
           //顯示登入成功
           window.alert('登入成功');
           //切換分頁
-          this.$router.push({ name: 'ProductListView' });
+          this.$router.push({ path: '/admin/productlist' });
         })
         .catch((err) => {
           alert(err.response.data.message);
+          console.log(err);
         });
     },
   },
