@@ -1,0 +1,1 @@
+import{_ as o,r as t,o as n,a as r,b as s,F as a,d as c}from"./index-36e09886.js";const _={},l=c("h1",null,"我是首頁",-1);function m(d,i){const e=t("RouterView");return n(),r(a,null,[l,s(e)],64)}const f=o(_,[["render",m]]);export{f as default};
