@@ -1,1 +1,0 @@
-import{_ as o,r as t,o as n,a as r,b as a,F as s,d as c}from"./index-36e09886.js";const _={},l=c("h1",null,"我是購物車頁面",-1);function d(i,m){const e=t("RouterView");return n(),r(s,null,[l,a(e)],64)}const f=o(_,[["render",d]]);export{f as default};
