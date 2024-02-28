@@ -12,6 +12,9 @@ import { Field, Form, ErrorMessage } from 'vee-validate';
 import VueSweetalert2 from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 
+import { register } from 'swiper/element/bundle';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+
 import { LoadingPlugin } from 'vue-loading-overlay'
 import 'vue-loading-overlay/dist/css/index.css'
 
@@ -28,6 +31,8 @@ app.component('VField', Field);
 app.component('ErrorMessage', ErrorMessage);
 app.use(VueSweetalert2)
 app.use(LoadingPlugin)
+app.use(register);
+app.use(Swiper, SwiperSlide);
 app.config.globalProperties.$bs = bootstrap
 
 app.mount('#app')
